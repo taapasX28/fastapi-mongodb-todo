@@ -1,5 +1,4 @@
 def todo_serializer(todo) -> dict:
-    print(str(todo["_id"]))
     return {
         "id": str(todo["_id"]),
         "name": todo["name"],

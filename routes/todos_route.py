@@ -1,7 +1,8 @@
+from time import sleep
 from fastapi import APIRouter
 
 from models.todos_model import Todo
-from config.database import collection_name
+from config.database import collection_name, producer, consumer
 
 from schemas.todos_schema import todos_serializer, todo_serializer
 from bson import ObjectId
@@ -17,7 +18,11 @@ async def get_todos():
 # post
 @todo_api_router.post("/")
 async def create_todo(todo: Todo):
-    _id = collection_name.insert_one(dict(todo))
+    producer.send('todo1', dict(todo))
+    for msg in consumer:
+        message_val = msg.value
+        break
+    _id = collection_name.insert_one(message_val)
     return todos_serializer(collection_name.find({"_id": _id.inserted_id}))
 
 

@@ -2,10 +2,12 @@ from time import sleep
 from fastapi import APIRouter
 
 from models.todos_model import Todo
-from config.database import collection_name, producer, consumer
+from config.database import collection_name, producer, consumer, redisClient
 
 from schemas.todos_schema import todos_serializer, todo_serializer
 from bson import ObjectId
+from bson.json_util import dumps
+import json
 
 todo_api_router = APIRouter()
 
@@ -13,7 +15,10 @@ todo_api_router = APIRouter()
 @todo_api_router.get("/")
 async def get_todos():
     todos = todos_serializer(collection_name.find())
-    return todos
+    serializedObj = dumps(todos)
+    redisClient.set('todos', serializedObj)
+    todolist = json.loads(redisClient.get('todos'))
+    return todolist
 
 # post
 @todo_api_router.post("/")

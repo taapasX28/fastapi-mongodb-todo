@@ -5,6 +5,8 @@
 1. fastAPI
 2. uvicorn
 3. pymongo
+4. kafka
+5. redis
 
 ```shell
 $ pip install fastapi uvicorn pymongo pymongo[srv]
